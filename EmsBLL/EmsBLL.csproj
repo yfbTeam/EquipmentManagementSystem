@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{05C3C3F5-34D7-4E97-ADD1-FEA3E33060F8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EmsBLL</RootNamespace>
+    <AssemblyName>EmsBLL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>dll\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>dll\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>dll\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>dll\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BLLCommon.cs" />
+    <Compile Include="BLLTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BLLTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PartialClass\BorrowRecord.cs" />
+    <Compile Include="PartialClass\Building.cs" />
+    <Compile Include="PartialClass\ClassInfo.cs" />
+    <Compile Include="PartialClass\ContractInfo.cs" />
+    <Compile Include="PartialClass\CountPlan.cs" />
+    <Compile Include="PartialClass\Dictionary.cs" />
+    <Compile Include="PartialClass\EquipborrowManage.cs" />
+    <Compile Include="PartialClass\EquipDetail.cs" />
+    <Compile Include="PartialClass\EquipList.cs" />
+    <Compile Include="PartialClass\ExperimentClassInfo.cs" />
+    <Compile Include="PartialClass\Honor.cs" />
+    <Compile Include="PartialClass\InstrumentEquip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PartialClass\InventoryList.cs" />
+    <Compile Include="PartialClass\InventoryListDetail.cs" />
+    <Compile Include="PartialClass\InventoryPlan.cs" />
+    <Compile Include="PartialClass\LearnYear.cs" />
+    <Compile Include="PartialClass\MenuInfo.cs" />
+    <Compile Include="PartialClass\OrderInfo.cs" />
+    <Compile Include="PartialClass\PlanExperiment.cs" />
+    <Compile Include="PartialClass\Repair.cs" />
+    <Compile Include="PartialClass\RepairDetails.cs" />
+    <Compile Include="PartialClass\Role.cs" />
+    <Compile Include="PartialClass\RoleOfMenu.cs" />
+    <Compile Include="PartialClass\RoleOfUser.cs" />
+    <Compile Include="PartialClass\SectionPlace.cs" />
+    <Compile Include="PartialClass\Student.cs" />
+    <Compile Include="PartialClass\TeachingPlan.cs" />
+    <Compile Include="PartialClass\UserInfo.cs" />
+    <Compile Include="PartialClass\View_CountALL.cs" />
+    <Compile Include="PartialClass\View_CountBG.cs" />
+    <Compile Include="PartialClass\Warehouse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BLLTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BLLTemplate.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EmsDAL\EmsDAL.csproj">
+      <Project>{708b3e8d-5832-4772-a1b2-c506f762319b}</Project>
+      <Name>EmsDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EmsModel\EmsModel.csproj">
+      <Project>{f56abe08-c301-44a5-897c-2a27a4a8260b}</Project>
+      <Name>EmsModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="dll\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="dll\NPOI.dll" />
+    <Content Include="dll\NPOI.OOXML.dll" />
+    <Content Include="dll\NPOI.OpenXml4Net.dll" />
+    <Content Include="dll\NPOI.OpenXmlFormats.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

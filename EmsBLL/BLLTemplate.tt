@@ -1,0 +1,248 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.xml" #>
+<#@ import namespace="System.Data.SqlClient" #>
+
+
+<#	// 生成配置
+	// 是否生成所有表 
+	bool builderAll = true;
+	// 是否使用表名配置
+	bool useTableNamesDictionary = true;   
+#>
+<#	// 连接字符串,表结构查询语句
+	string musicStoreConnectionString = @"data source=192.168.1.212;Initial Catalog=EquipmentDBOrig_UCC;User ID=sa;Password=sa@2016";      
+
+	string getAllTableSchemaSqlTemplate = @"SELECT sysobjects.Name as TableName, syscolumns.Name as ColumnName, SysTypes.Name as ColumnType, syscolumns.Length as ColumnLength, isnull(sys.extended_properties.Value,'') as Remark,case when syscolumns.name in (select primarykey=a.name FROM syscolumns a inner join sysobjects b on a.id=b.id  and b.xtype='U' and b.name<>'dtproperties' where  exists(SELECT 1 FROM sysobjects where xtype='PK' and name in (SELECT name FROM sysindexes WHERE indid in(SELECT indid FROM sysindexkeys WHERE id = a.id AND colid=a.colid))) and b.name=sysobjects.Name) then 1 else 0 end as IsKey FROM sysobjects,SysTypes,syscolumns LEFT JOIN sys.extended_properties ON (Syscolumns.Id = sys.extended_properties.major_id AND Syscolumns.Colid = sys.extended_properties.minor_id) WHERE (sysobjects.Xtype ='u' OR Sysobjects.Xtype ='v') AND sysobjects.name='{0}' AND Sysobjects.Id = Syscolumns.Id AND SysTypes.XType = Syscolumns.XType AND SysTypes.Name <> 'sysname' AND Sysobjects.Name Like '%' AND (sys.extended_properties.name='MS_Description' or sys.extended_properties.name is null) ORDER By SysObjects.Name, SysColumns.colid ";
+#>
+<#	// 设置要生成的当前数据库中所有的表名	
+	Dictionary<string,string> tableNames=new Dictionary<string,string>();
+	//tableNames.Add("TestTable","TestTable"); 
+	tableNames.Add("View_LoanDate","View_LoanDate");
+	tableNames.Add("View_LoanANDEscheat","View_LoanANDEscheat");
+	tableNames.Add("View_RepairList","View_RepairList");
+	tableNames.Add("View_Calendar_Land","View_Calendar_Land");
+#>
+<#	// 获取当前数据库中所有的表名	
+	if (builderAll == true )
+	{  		
+		using (SqlConnection sqlConnection = new SqlConnection(musicStoreConnectionString))
+		{
+			// 获取所有用户表的查询语句
+			string getAllTableNameSql = "SELECT name FROM sysobjects where xtype='U'";
+			SqlCommand sqlCommand = new SqlCommand(getAllTableNameSql, sqlConnection);
+			sqlConnection.Open();
+			SqlDataReader reader = sqlCommand.ExecuteReader();
+
+			while (reader.Read())
+			{
+				string theTableName = reader["name"] as string;
+				if(useTableNamesDictionary == true)
+				{
+					if(tableNames.ContainsKey(theTableName)){
+						continue;
+					}
+				}
+				tableNames.Add(theTableName,theTableName.TrimEnd('s'));
+			}
+		} 
+	}
+#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data.SqlClient;
+using System.Data;
+
+namespace EmsBLL
+{
+<#	// 循环生成实体类
+		int i=0;
+		foreach (string tableName in tableNames.Keys)
+		{
+#>
+<#
+			// 表注释
+			string tableRemark = string.Empty;
+			using (SqlConnection sqlConnection = new SqlConnection(musicStoreConnectionString))
+			{
+				// 获取所有用户表的查询语句
+				string getTableRemarkSql = string.Format("SELECT value FROM fn_listextendedproperty (NULL, 'schema', 'dbo', 'table', default, NULL, NULL) where name=N'MS_Description' or objname=N'{0}' ", tableName);
+				SqlCommand sqlCommand = new SqlCommand(getTableRemarkSql, sqlConnection);
+				sqlConnection.Open();
+				SqlDataReader reader = sqlCommand.ExecuteReader();
+				
+				if (reader.Read())
+				{
+					i++;
+					tableRemark = reader["value"] as string;
+					tableRemark += "实体类"+i;
+				}
+			} 
+#>
+
+	/// </summary>
+	///	<#=tableRemark #>
+	/// </summary>
+    public partial class <#=tableNames[tableName] #> 
+    {
+		internal readonly EmsDAL.<#=tableNames[tableName] #> dal = new EmsDAL.<#=tableNames[tableName] #>(); 
+        public <#=tableNames[tableName] #>()
+        { }
+<#	// 生成属性
+			string strKeyCol="";
+			string strKeyType="";
+			using (SqlConnection sqlConnection = new SqlConnection(musicStoreConnectionString))
+			{
+				// 获取所有用户表的查询语句
+				string getAllTableSchemaSql = string.Format(getAllTableSchemaSqlTemplate, tableName);
+				SqlCommand sqlCommand = new SqlCommand(getAllTableSchemaSql, sqlConnection);
+				sqlConnection.Open();
+				SqlDataReader reader = sqlCommand.ExecuteReader();
+				int num=0;
+				while (reader.Read())
+				{
+					
+					string dbDataType2 = reader["ColumnType"] as string; // 数据库中使用的类型
+					string dataType2 = string.Empty; // 数据类型
+					
+					switch (dbDataType2)
+					{
+						case "decimal":
+						case "numeric":
+						case "money":
+						case "smallmoney":
+							dataType2 = "decimal?";
+							break;
+						case "char":
+						case "nchar":
+						case "varchar":
+						case "nvarchar":
+						case "text":
+						case "ntext":
+							dataType2 = "string";
+							break;
+						case "uniqueidentifier":
+							dataType2 = "Guid?";
+							break;
+						case "bit":
+							dataType2 = "Boolean";
+							break;
+						case "real":
+							dataType2 = "Single?";
+							break;
+						case "bigint":
+							dataType2 = "long?";
+							break;
+						case "int":
+							dataType2 = "int";
+							break;
+						case "tinyint":
+						dataType2 = "Byte";
+							break;
+						case "smallint":
+							dataType2 = "short?";
+							break;
+						case "float":
+							dataType2 = "float?";
+							break;
+						case "date":
+						case "datetime":
+						case "datetime2":
+						case "smalldatetime":
+							dataType2 = "DateTime?";
+							break;
+						case "datetimeoffset ":
+							dataType2 = "DateTimeOffset?";
+							break;
+						case "timeSpan ":
+							dataType2 = "TimeSpan?";
+							break;
+						case "image":
+						case "binary":
+						case "varbinary":
+							dataType2 = "byte[]";
+							break;
+						default:
+							break;
+					}
+					bool isKey = (reader["IsKey"] as int?).Value == 1;
+
+					if(isKey)
+					{
+						strKeyCol=reader["ColumnName"] as string;
+						strKeyType=dataType2;
+					}
+					
+				}
+			}
+
+
+#>
+				 /// <summary>
+				/// 增加一条数据
+				/// </summary>
+				public int Add(EmsModel.<#=tableNames[tableName] #> EmsModel)
+				{
+					return dal.Add(EmsModel);
+				}
+
+				/// <summary>
+				/// 更新一条数据
+				/// </summary>
+				public int Update(EmsModel.<#=tableNames[tableName] #> EmsModel)
+				{
+					int count = dal.Update(EmsModel);
+            
+					return count;
+
+				}
+
+				/// <summary>
+				/// 删除数据， 可批量
+				/// </summary>
+				/// <param name="idlist">主键字符串 用,分开 如"1,2,3,4" 单个删除 传1个即可</param>
+				/// <returns>返回 影响行数</returns>
+				public int Delete(string strID)
+				{
+					int count = dal.Delete(strID);
+            
+					return count;
+
+				}
+
+				/// <summary>
+				/// 是否存在该记录
+				/// </summary>
+				public bool Exists(<#=strKeyType#> <#=strKeyCol#>)
+				{
+					bool bln = dal.Exists(<#=strKeyCol#>);
+					return bln;
+				}
+
+
+				///<summary>
+				///获取泛型数据列表 分页
+				/// </summary>
+				public List<EmsModel.<#=tableNames[tableName] #>> GetListByPage(EmsModel.<#=tableNames[tableName] #> EmsMod,int startIndex, int endIndex)
+				{
+					return dal.GetListByPage(EmsMod,startIndex,endIndex);
+				}
+				
+				public int GetListByPageCount(EmsModel.<#=tableNames[tableName] #> EmsMod)
+				{
+					return dal.GetListByPageCount(EmsMod);
+				}
+
+    }
+<#
+		}
+#>
+}

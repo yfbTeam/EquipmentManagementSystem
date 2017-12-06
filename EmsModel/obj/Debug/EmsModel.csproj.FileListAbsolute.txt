@@ -1,0 +1,4 @@
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsModel\bin\Debug\EmsModel.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsModel\bin\Debug\EmsModel.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsModel\obj\Debug\EmsModel.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsModel\obj\Debug\EmsModel.pdb

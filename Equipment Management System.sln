@@ -1,0 +1,85 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMS.Web", "EMS.Web\EMS.Web.csproj", "{87D21AC0-31C1-4840-B033-71062DFC7297}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmsBLL", "EmsBLL\EmsBLL.csproj", "{05C3C3F5-34D7-4E97-ADD1-FEA3E33060F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmsDAL", "EmsDAL\EmsDAL.csproj", "{708B3E8D-5832-4772-A1B2-C506F762319B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmsModel", "EmsModel\EmsModel.csproj", "{F56ABE08-C301-44A5-897C-2A27A4A8260B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBUtility", "DBUtility\DBUtility.csproj", "{D9883623-0C26-4606-9E7D-7DA9402F3C62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMSHandler", "EMSHandler\EMSHandler.csproj", "{8F02D07C-E25D-4CE2-8F38-C69F4CC09CD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmsCommon", "EmsCommon\EmsCommon.csproj", "{3A6172AF-46AB-45BF-9717-A1887F2A0C66}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87D21AC0-31C1-4840-B033-71062DFC7297}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87D21AC0-31C1-4840-B033-71062DFC7297}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87D21AC0-31C1-4840-B033-71062DFC7297}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87D21AC0-31C1-4840-B033-71062DFC7297}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05C3C3F5-34D7-4E97-ADD1-FEA3E33060F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05C3C3F5-34D7-4E97-ADD1-FEA3E33060F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05C3C3F5-34D7-4E97-ADD1-FEA3E33060F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05C3C3F5-34D7-4E97-ADD1-FEA3E33060F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{708B3E8D-5832-4772-A1B2-C506F762319B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{708B3E8D-5832-4772-A1B2-C506F762319B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{708B3E8D-5832-4772-A1B2-C506F762319B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{708B3E8D-5832-4772-A1B2-C506F762319B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F56ABE08-C301-44A5-897C-2A27A4A8260B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F56ABE08-C301-44A5-897C-2A27A4A8260B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F56ABE08-C301-44A5-897C-2A27A4A8260B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F56ABE08-C301-44A5-897C-2A27A4A8260B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9883623-0C26-4606-9E7D-7DA9402F3C62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9883623-0C26-4606-9E7D-7DA9402F3C62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9883623-0C26-4606-9E7D-7DA9402F3C62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9883623-0C26-4606-9E7D-7DA9402F3C62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F02D07C-E25D-4CE2-8F38-C69F4CC09CD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F02D07C-E25D-4CE2-8F38-C69F4CC09CD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F02D07C-E25D-4CE2-8F38-C69F4CC09CD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F02D07C-E25D-4CE2-8F38-C69F4CC09CD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A6172AF-46AB-45BF-9717-A1887F2A0C66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A6172AF-46AB-45BF-9717-A1887F2A0C66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A6172AF-46AB-45BF-9717-A1887F2A0C66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A6172AF-46AB-45BF-9717-A1887F2A0C66}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 8
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://61.50.119.70:700/tfs/%E4%BB%AA%E5%99%A8%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = DBUtility\\DBUtility.csproj
+		SccProjectName1 = DBUtility
+		SccLocalPath1 = DBUtility
+		SccProjectUniqueName2 = EMS.Web\\EMS.Web.csproj
+		SccProjectName2 = EMS.Web
+		SccLocalPath2 = EMS.Web
+		SccProjectUniqueName3 = EmsBLL\\EmsBLL.csproj
+		SccProjectName3 = EmsBLL
+		SccLocalPath3 = EmsBLL
+		SccProjectUniqueName4 = EmsDAL\\EmsDAL.csproj
+		SccProjectName4 = EmsDAL
+		SccLocalPath4 = EmsDAL
+		SccProjectUniqueName5 = EmsModel\\EmsModel.csproj
+		SccProjectName5 = EmsModel
+		SccLocalPath5 = EmsModel
+		SccProjectUniqueName6 = EMSHandler\\EMSHandler.csproj
+		SccProjectName6 = EMSHandler
+		SccLocalPath6 = EMSHandler
+		SccProjectUniqueName7 = EmsCommon\\EmsCommon.csproj
+		SccProjectName7 = EmsCommon
+		SccLocalPath7 = EmsCommon
+	EndGlobalSection
+EndGlobal

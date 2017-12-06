@@ -1,0 +1,696 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.xml" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#	// 生成配置
+	// 是否生成所有表  
+	bool builderAll = true;
+	// 是否使用表名配置 
+	bool useTableNamesDictionary = true;
+#> 
+<#	// 连接字符串,表结构查询语句
+	string musicStoreConnectionString = @"data source=192.168.1.212;Initial Catalog=EquipmentDBOrig_UCC;User ID=sa;Password=sa@2016";         
+	
+	string getAllTableSchemaSqlTemplate = @"SELECT sysobjects.Name as TableName, syscolumns.Name as ColumnName, SysTypes.Name as ColumnType, syscolumns.Length as ColumnLength, isnull(sys.extended_properties.Value,'') as Remark,case when syscolumns.name in (select primarykey=a.name FROM syscolumns a inner join sysobjects b on a.id=b.id  and b.xtype='U' and b.name<>'dtproperties' where  exists(SELECT 1 FROM sysobjects where xtype='PK' and name in (SELECT name FROM sysindexes WHERE indid in(SELECT indid FROM sysindexkeys WHERE id = a.id AND colid=a.colid))) and b.name=sysobjects.Name) then 1 else 0 end as IsKey FROM sysobjects,SysTypes,syscolumns LEFT JOIN sys.extended_properties ON (Syscolumns.Id = sys.extended_properties.major_id AND Syscolumns.Colid = sys.extended_properties.minor_id) WHERE (sysobjects.Xtype ='u' OR Sysobjects.Xtype ='v') AND sysobjects.name='{0}' AND Sysobjects.Id = Syscolumns.Id AND SysTypes.XType = Syscolumns.XType AND SysTypes.Name <> 'sysname' AND Sysobjects.Name Like '%' AND (sys.extended_properties.name='MS_Description' or sys.extended_properties.name is null) ORDER By SysObjects.Name, SysColumns.colid ";
+#>
+<#	// 设置要生成的当前数据库中所有的表名	
+	Dictionary<string,string> tableNames=new Dictionary<string,string>();
+	//tableNames.Add("TestTable","TestTable"); 
+	tableNames.Add("View_orderCount","View_orderCount");
+	tableNames.Add("View_LoanDate","View_LoanDate");
+	tableNames.Add("View_InvenRoomEquip","View_InvenRoomEquip");
+	tableNames.Add("View_LoanANDEscheat","View_LoanANDEscheat");
+	tableNames.Add("View_Calendar","View_Calendar");
+	tableNames.Add("View_RepairList","View_RepairList");
+	tableNames.Add("View_EquipDatail","View_EquipDatail");
+	tableNames.Add("View_Calendar_Land","View_Calendar_Land");
+
+#>
+<#	// 获取当前数据库中所有的表名	
+	if (builderAll == true )
+	{  		
+		using (SqlConnection sqlConnection = new SqlConnection(musicStoreConnectionString))
+		{
+			// 获取所有用户表的查询语句
+			string getAllTableNameSql = "SELECT name FROM sysobjects where xtype='U'";
+			SqlCommand sqlCommand = new SqlCommand(getAllTableNameSql, sqlConnection);
+			sqlConnection.Open();
+			SqlDataReader reader = sqlCommand.ExecuteReader();
+
+			while (reader.Read())
+			{
+				string theTableName = reader["name"] as string;
+				if(useTableNamesDictionary == true)
+				{
+					if(tableNames.ContainsKey(theTableName)){
+						continue;
+					}
+				}
+				tableNames.Add(theTableName,theTableName.TrimEnd('s'));
+			}
+		} 
+	}
+#>
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+
+namespace EmsDAL
+{
+<#	// 循环生成实体类
+		int i=0;
+		foreach (string tableName in tableNames.Keys)
+		{
+#>
+<#
+			// 表注释
+			string tableRemark = string.Empty;
+			using (SqlConnection sqlConnection = new SqlConnection(musicStoreConnectionString))
+			{
+				// 获取所有用户表的查询语句
+				string getTableRemarkSql = string.Format("SELECT value FROM fn_listextendedproperty (NULL, 'schema', 'dbo', 'table', default, NULL, NULL) where name=N'MS_Description' or objname=N'{0}' ", tableName);
+				SqlCommand sqlCommand = new SqlCommand(getTableRemarkSql, sqlConnection);
+				sqlConnection.Open();
+				SqlDataReader reader = sqlCommand.ExecuteReader();
+				
+				if (reader.Read())
+				{
+					i++;
+					tableRemark = reader["value"] as string;
+					tableRemark += "实体类"+i;
+				}
+			} 
+#>
+
+	/// </summary>
+	///	<#=tableRemark #>
+	/// </summary>
+    public partial class <#=tableNames[tableName] #>: DALHelper 
+    {
+<#	// 
+			//列名
+			string ColunmName="";
+			//参数列名
+			string in_ColunmName="";
+			//参数
+			string DbParameter="";
+			//主键参数
+			string DbParameter_key="";
+			string DbParameter_key2="";
+			//分页条件与参数
+			string PageWhere="";
+
+			string par_ColunmName="";
+			string strSqlParameter="";
+			string strColumnLength="";
+			string strParVal="";
+			string strUpSQL="";
+			string strKey="";
+			string strGetModel="";
+			string strSqlParameter_key="";
+			string strParVal_key="";
+			string strKeyCol="";
+			string strKeyType="";
+
+			string strSqlParameter_up ="";
+
+			string strParVal_up ="";
+
+			using (SqlConnection sqlConnection = new SqlConnection(musicStoreConnectionString))
+			{
+				// 获取所有用户表的查询语句
+				string getAllTableSchemaSql = string.Format(getAllTableSchemaSqlTemplate, tableName);
+				SqlCommand sqlCommand = new SqlCommand(getAllTableSchemaSql, sqlConnection);
+				sqlConnection.Open();
+				SqlDataReader reader = sqlCommand.ExecuteReader();
+				int num=0;
+				while (reader.Read())
+				{
+					string dbDataType = reader["ColumnType"] as string; // 数据库中使用的类型
+					string dataType = string.Empty; // 数据类型
+					
+					switch (dbDataType)
+					{
+						case "decimal":
+							dataType = "decimal?";
+							strColumnLength="Decimal";
+							break;
+						case "numeric":
+						case "money":
+						dataType = "decimal?";
+						strColumnLength="Decimal";
+							break;
+						case "smallmoney":
+							strColumnLength="SmallMoney";
+							dataType = "decimal?";
+							break;
+						case "char":
+						strColumnLength="String";
+						dataType = "string";
+							break;
+						case "nchar":
+						strColumnLength="String";
+						dataType = "string";
+							break;
+						case "varchar":
+						strColumnLength="String";
+						dataType = "string";
+							break;
+						case "nvarchar":
+						strColumnLength="String";
+						dataType = "string";
+							break;
+						case "text":
+						strColumnLength="Text";
+						dataType = "string";
+							break;
+						case "ntext":
+						strColumnLength="NText";
+							dataType = "string";
+							break;
+						case "uniqueidentifier":
+						strColumnLength="UniqueIdentifier";
+							dataType = "Guid?";
+							break;
+						case "bit":
+						strColumnLength="Boolean";
+							dataType = "bool?";
+							break;
+						case "real":
+						strColumnLength="Real";
+							dataType = "Single?";
+							break;
+						case "bigint":
+						strColumnLength="Int32";
+							dataType = "long?";
+							break;
+						case "int":
+						strColumnLength="Int32";
+							dataType = "int?";
+							break;
+						case "tinyint":
+						strColumnLength="Byte";
+						dataType = "Byte?";
+						break;
+						case "smallint":
+						strColumnLength="SmallInt";
+							dataType = "short?";
+							break;
+						case "float":
+						strColumnLength="Float";
+							dataType = "float?";
+							break;
+						case "date":
+						strColumnLength="Date";
+						break;
+						case "datetime":
+						strColumnLength="DateTime";
+						dataType = "DateTime?";
+						break;
+						case "datetime2":
+						strColumnLength="DateTime2";
+						dataType = "DateTime2?";
+						break;
+						case "smalldatetime":
+						strColumnLength="SmallDateTime";
+							dataType = "DateTime?";
+							break;
+						case "datetimeoffset ":
+						strColumnLength="DateTimeOffset";
+							dataType = "DateTimeOffset?";
+							break;
+						case "timeSpan ":
+						strColumnLength="Timestamp";
+							dataType = "TimeSpan?";
+							break;
+						case "image":
+						strColumnLength="Image";
+						break;
+						case "binary":
+						strColumnLength="Binary";
+						break;
+						case "varbinary":
+						strColumnLength="VarBinary";
+							dataType = "byte[]";
+							break;
+						default:
+							break;
+					}
+					string dbDataType2 = reader["ColumnType"] as string; // 数据库中使用的类型
+					string dataType2 = string.Empty; // 数据类型
+					
+					switch (dbDataType2)
+					{
+						case "decimal":
+						case "numeric":
+						case "money":
+						case "smallmoney":
+							dataType2 = "decimal?";
+							break;
+						case "char":
+						case "nchar":
+						case "varchar":
+						case "nvarchar":
+						case "text":
+						case "ntext":
+							dataType2 = "string";
+							break;
+						case "uniqueidentifier":
+							dataType2 = "Guid?";
+							break;
+						case "bit":
+							dataType2 = "Boolean";
+							break;
+						case "real":
+							dataType2 = "Single?";
+							break;
+						case "bigint":
+							dataType2 = "long?";
+							break;
+						case "int":
+							dataType2 = "Int32";
+							break;
+						case "tinyint":
+						dataType2 = "Byte";
+						break;
+						case "smallint":
+							dataType2 = "short?";
+							break;
+						case "float":
+							dataType2 = "float?";
+							break;
+						case "date":
+						case "datetime":
+						case "datetime2":
+						case "smalldatetime":
+							dataType2 = "DateTime?";
+							break;
+						case "datetimeoffset ":
+							dataType2 = "DateTimeOffset?";
+							break;
+						case "timeSpan ":
+							dataType2 = "TimeSpan?";
+							break;
+						case "image":
+						case "binary":
+						case "varbinary":
+							dataType2 = "byte[]";
+							break;
+						default:
+							break;
+					}
+					bool isKey = (reader["IsKey"] as int?).Value == 1;
+
+					if(isKey)
+					{
+						strKeyCol=reader["ColumnName"] as string;
+						strKeyType=dataType2;
+
+						strKey=" where "+ (reader["ColumnName"] as string)+"=@in_"+(reader["ColumnName"] as string);
+						strSqlParameter_key="new SqlParameter(\"@"+ (reader["ColumnName"] as string) +"\", SqlDbType."+ strColumnLength +","+reader["ColumnLength"] +")";
+
+						strParVal_key="parameters[0].Value ="+(reader["ColumnName"] as string)+";";
+					
+						
+						DbParameter_key+="dbHelper.CreateInDbParameter(\""+"@in_"+strKeyCol+"\", DbType."+ strColumnLength +", "+strKeyCol+")";
+						DbParameter_key2+="dbHelper.CreateInDbParameter(\""+"@in_"+strKeyCol+"\", DbType."+ strColumnLength +", EmsModel."+strKeyCol+"),";
+					}else{
+
+						///添加SQL
+						//
+						string in_name="";
+
+						if(ColunmName!=""){
+						ColunmName+=",";
+						}
+						ColunmName+=reader["ColumnName"] as string;
+
+						if(in_ColunmName!=""){
+						in_ColunmName+=",";
+						}
+						in_ColunmName+="@in_"+(reader["ColumnName"] as string);
+						in_name="@in_"+(reader["ColumnName"] as string);
+						if(DbParameter!=""){
+						DbParameter+=",";
+						}
+						//DbParameter+="dbHelper.CreateInDbParameter("+"in_"+(reader["ColumnName"] as string)+", DbType."+ strColumnLength +", "+(reader["ColumnName"] as string)+")
+						DbParameter+="dbHelper.CreateInDbParameter(\""+in_name+"\", DbType."+ strColumnLength +", EmsModel."+(reader["ColumnName"] as string)+")";
+						if(par_ColunmName!=""){
+						par_ColunmName+=",";}
+						par_ColunmName+="@";
+						par_ColunmName+=reader["ColumnName"] as string;
+					
+
+						// SqlParameter
+						if(strSqlParameter!=""){
+						strSqlParameter+=",";
+						}
+						if(strColumnLength!="Text"){
+						strSqlParameter+="new SqlParameter(\"@"+ (reader["ColumnName"] as string) +"\", SqlDbType."+ strColumnLength +","+reader["ColumnLength"] +")";
+						}
+						else{
+						strSqlParameter+="new SqlParameter(\"@"+ (reader["ColumnName"] as string) +"\", SqlDbType."+ strColumnLength +")";
+						}
+
+						strParVal+="parameters["+num+"].Value = model."+(reader["ColumnName"] as string)+";";
+
+						num++;
+
+						/// Update
+						if(strUpSQL!="")
+						{ strUpSQL+=",";}
+						strUpSQL+=(reader["ColumnName"] as string )+"=@in_"+(reader["ColumnName"] as string);
+
+						PageWhere+="if (EmsMod."+(reader["ColumnName"] as string)+" != null){strWhere += \" and "+(reader["ColumnName"] as string)+"=@in_"+(reader["ColumnName"] as string)+" \";parmsList.Add(dbHelper.CreateInDbParameter(\"@in_"+(reader["ColumnName"] as string)+"\", DbType.String, EmsMod."+(reader["ColumnName"] as string)+")); }";
+           
+
+					}
+					//strGetModel+=" if (row[\""+(reader["ColumnName"] as string )+"\"] != null && row[\""+(reader["ColumnName"] as string )+"\"].ToString() != \"\"){model."+(reader["ColumnName"] as string )+" = int.Parse(row[\""+(reader["ColumnName"] as string )+"\"].ToString());}";
+					
+					strGetModel+="EmsModel."+(reader["ColumnName"] as string )+" = dr[\""+(reader["ColumnName"] as string )+"\"] as "+dataType+";";
+
+					if(strSqlParameter_up!=""){
+						strSqlParameter_up+=",";
+						}
+						if(strColumnLength!="Text"){
+						strSqlParameter_up +="new SqlParameter(\"@"+ (reader["ColumnName"] as string) +"\", SqlDbType."+ strColumnLength +","+reader["ColumnLength"] +")";
+
+						strParVal_up +="parameters["+num+"].Value = model."+(reader["ColumnName"] as string)+";";
+						}
+						else{
+						strSqlParameter+="new SqlParameter(\"@"+ (reader["ColumnName"] as string) +"\", SqlDbType."+ strColumnLength +")";
+
+						strParVal_up +="parameters["+num+"].Value = model."+(reader["ColumnName"] as string)+";";
+						}
+					
+				}
+			}
+
+#>
+
+			/// <summary>
+			/// 增加一条数据
+			/// </summary>
+			public int Add(EmsModel.<#=tableNames[tableName] #> EmsModel)
+			{
+				try
+					{
+						StringBuilder sbSql;
+						DbParameter[] parms;
+
+						sbSql = new StringBuilder();
+						sbSql.Append("INSERT INTO <#=tableNames[tableName] #>(");
+						sbSql.Append("<#= ColunmName #>)");
+						sbSql.Append(" VALUES (");
+						sbSql.Append("<#= in_ColunmName #>)");
+						sbSql.Append(";select @@identity");
+
+						parms = new DbParameter[]{
+							<#= DbParameter #>
+						};
+
+						object obj = dbHelper.ExecuteScalar(CommandType.Text, sbSql.ToString(), parms);
+						if (obj == null)
+                        {
+                            return 0;
+                        }
+                        else
+                        {
+                            return Convert.ToInt32(obj);
+                        }
+					}
+					catch (Exception)
+					{
+						//写入日志
+						//throw;
+						return 0;
+					}
+			}
+
+			/// <summary>
+			/// 增加一条数据 事务中
+			/// </summary>
+			public int Add(SqlTransaction trans,EmsModel.<#=tableNames[tableName] #> EmsModel) 
+			{
+				try
+					{
+						StringBuilder sbSql;
+						DbParameter[] parms;
+
+						sbSql = new StringBuilder();
+						sbSql.Append("INSERT INTO <#=tableNames[tableName] #>(");
+						sbSql.Append("<#= ColunmName #>)");
+						sbSql.Append(" VALUES (");
+						sbSql.Append("<#= in_ColunmName #>)");
+						sbSql.Append(";select @@identity");
+
+						parms = new DbParameter[]{
+							<#= DbParameter #>
+						};
+
+						object obj = dbHelper.ExecuteScalar(trans,CommandType.Text, sbSql.ToString(), parms);
+						if (obj == null)
+                        {
+                            return 0;
+                        }
+                        else
+                        {
+                            return Convert.ToInt32(obj);
+                        }
+					}
+					catch (Exception)
+					{
+						//写入日志
+						//throw;
+						return 0;
+					}
+			}
+
+			/// <summary>
+			/// 更新一条数据
+			/// </summary>
+			public int Update(EmsModel.<#=tableNames[tableName] #> EmsModel)
+			{
+				try
+					{
+					StringBuilder sbSql;
+					DbParameter[] parms;
+
+					sbSql = new StringBuilder();
+					sbSql.Append("update <#=tableNames[tableName] #> set ");
+					sbSql.Append("<#=strUpSQL#>");
+					sbSql.Append(" <#= strKey#>");
+
+					parms = new DbParameter[]{
+						<#= DbParameter_key2 #>
+						<#= DbParameter #>
+					};
+
+					return dbHelper.ExecuteNonQuery(CommandType.Text, sbSql.ToString(), parms);
+				}
+				catch (Exception)
+				{
+					//写入日志
+					//throw;
+					return 0;
+					}
+			}
+			/// <summary>
+			/// 更新一条数据 事务中
+			/// </summary>
+			public int Update(SqlTransaction trans,EmsModel.<#=tableNames[tableName] #> EmsModel)
+			{
+				try
+					{
+					StringBuilder sbSql;
+					DbParameter[] parms;
+
+					sbSql = new StringBuilder();
+					sbSql.Append("update <#=tableNames[tableName] #> set ");
+					sbSql.Append("<#=strUpSQL#>");
+					sbSql.Append(" <#= strKey#>");
+
+					parms = new DbParameter[]{
+						<#= DbParameter_key2 #>
+						<#= DbParameter #>
+					};
+
+					return dbHelper.ExecuteNonQuery(trans,CommandType.Text, sbSql.ToString(), parms);
+				}
+				catch (Exception)
+				{
+					//写入日志
+					//throw;
+					return 0;
+					}
+			}
+
+			/// <summary>
+			/// 删除数据 可批量
+			/// </summary>
+			public int Delete(string strID)
+			{
+				try
+					{
+						StringBuilder sbSql;
+						DbParameter[] parms;
+
+						sbSql = new StringBuilder();
+						sbSql.Append("DELETE FROM <#=tableNames[tableName] #>");
+						sbSql.Append(" WHERE <#=strKeyCol #> in (@in_ID)");
+
+						parms = new DbParameter[]{
+						dbHelper.CreateInDbParameter("@in_ID", DbType.String, strID)};
+							return dbHelper.ExecuteNonQuery(CommandType.Text, sbSql.ToString(), parms);
+						}
+				catch (Exception)
+					{
+							//写入日志
+							//throw;
+							return 0;
+					}
+			}
+
+			/// <summary>
+			/// 删除数据 可批量
+			/// </summary>
+			public int Delete(SqlTransaction trans,string strID)
+			{
+				try
+					{
+						StringBuilder sbSql;
+						DbParameter[] parms;
+
+						sbSql = new StringBuilder();
+						sbSql.Append("DELETE FROM <#=tableNames[tableName] #>");
+						sbSql.Append(" WHERE <#=strKeyCol #> in (@in_ID)");
+
+						parms = new DbParameter[]{
+						dbHelper.CreateInDbParameter("@in_ID", DbType.String, strID)};
+							return dbHelper.ExecuteNonQuery(trans, CommandType.Text, sbSql.ToString(), parms);
+						}
+				catch (Exception)
+					{
+							//写入日志
+							//throw;
+							return 0;
+					}
+			}	
+				
+			/// <summary>
+			/// 是否存在该记录
+			/// </summary>
+			public bool Exists(<#= strKeyType #> <#= strKeyCol #>)
+			{
+				try
+					{
+					StringBuilder sbSql;
+					DbParameter[] parms;
+
+					sbSql = new StringBuilder();
+					sbSql.Append("SELECT COUNT(1) FROM <#=tableNames[tableName] #>");
+					sbSql.Append("<#= strKey  #>");
+
+					parms = new DbParameter[]{
+						<#=DbParameter_key#>
+						};
+
+					object obj = dbHelper.ExecuteScalar(CommandType.Text, sbSql.ToString(), parms);
+						return int.Parse(obj.ToString()) > 0;
+						}
+				catch (Exception)
+						{
+							//写入日志
+							//throw;
+							return false;
+						}
+			}
+
+		
+		///<summary>
+        ///获取泛型数据列表 分页
+        /// </summary>
+        public List<EmsModel.<#=tableNames[tableName] #>> GetListByPage(EmsModel.<#=tableNames[tableName] #> EmsMod,int startIndex, int endIndex)
+        {
+            //表名
+            string TableName = "<#=tableNames[tableName] #>";
+            //条件
+            string strWhere="";
+            //排序
+            string orderby="";
+            //参数
+            List<DbParameter> parmsList = new List<DbParameter>();
+
+			<#= PageWhere #>
+            
+
+            DbParameter[] parms = parmsList.ToArray();//将参数集合转换为对应的数组;
+            DataSet ds= GetListByPage( TableName, strWhere,  orderby,  startIndex,  endIndex, parms);
+            List<EmsModel.<#=tableNames[tableName] #>> list = GetList(ds.Tables[0]);
+            return list;
+        }
+
+		public int GetListByPageCount(EmsModel.<#=tableNames[tableName] #> EmsMod)
+        {
+            string TableName = "<#=tableNames[tableName] #>";
+            string strWhere="";
+
+            List<DbParameter> parmsList = new List<DbParameter>();
+			<#= PageWhere #>
+            
+            DbParameter[] parms = parmsList.ToArray();//将参数集合转换为对应的数组;
+
+            return GetRecordCount(TableName, strWhere, parms);
+        }
+				
+		/// <summary>
+        /// 由一行数据得到一个实体
+        /// </summary>
+        public void DbDataReaderToModel(EmsModel.<#=tableNames[tableName] #> EmsModel, DbDataReader dr)
+        {
+            <#= strGetModel #>
+        }
+
+		/// <summary>
+        /// 由DataTable得到泛型数据列表
+        /// </summary>
+        public List<EmsModel.<#=tableNames[tableName] #>> GetList(DataTable dt)
+        {
+            List<EmsModel.<#=tableNames[tableName] #>> lst = new List<EmsModel.<#=tableNames[tableName] #>>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                EmsModel.<#=tableNames[tableName] #> mod = new EmsModel.<#=tableNames[tableName] #>();
+                DataRowToModel(mod,dt.Rows[i]);
+                lst.Add(mod);
+            }
+            
+            return lst;
+        }
+
+		/// <summary>
+        /// 由一行数据得到一个实体
+        /// </summary>
+        public void DataRowToModel(EmsModel.<#=tableNames[tableName] #> EmsModel, DataRow dr)
+        {
+            <#= strGetModel #>
+        }		
+
+    }
+<#
+		}
+#>
+}

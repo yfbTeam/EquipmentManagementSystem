@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{708B3E8D-5832-4772-A1B2-C506F762319B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EmsDAL</RootNamespace>
+    <AssemblyName>EmsDAL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PartialClass\BorrowRecord.cs" />
+    <Compile Include="DALHelper.cs" />
+    <Compile Include="DALTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DALTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PartialClass\Building.cs" />
+    <Compile Include="PartialClass\ClassInfo.cs" />
+    <Compile Include="PartialClass\ContractInfo.cs" />
+    <Compile Include="PartialClass\CountPlan.cs" />
+    <Compile Include="PartialClass\Dictionary.cs" />
+    <Compile Include="PartialClass\EquipborrowManage.cs" />
+    <Compile Include="PartialClass\EquipDetail.cs" />
+    <Compile Include="PartialClass\EquipInto.cs" />
+    <Compile Include="PartialClass\EquipList.cs" />
+    <Compile Include="PartialClass\ExperimentClassInfo.cs" />
+    <Compile Include="PartialClass\InstrumentEquip.cs" />
+    <Compile Include="PartialClass\InventoryList.cs" />
+    <Compile Include="PartialClass\InventoryListDetail.cs" />
+    <Compile Include="PartialClass\InventoryPlan.cs" />
+    <Compile Include="PartialClass\LearnYear.cs" />
+    <Compile Include="PartialClass\MenuInfo.cs" />
+    <Compile Include="PartialClass\PlanExperiment.cs" />
+    <Compile Include="PartialClass\OrderEquipDetail.cs" />
+    <Compile Include="PartialClass\OrderInfo.cs" />
+    <Compile Include="PartialClass\Repair.cs" />
+    <Compile Include="PartialClass\RepairDetails.cs" />
+    <Compile Include="PartialClass\Role.cs" />
+    <Compile Include="PartialClass\RoleOfMenu.cs" />
+    <Compile Include="PartialClass\RoleOfUser.cs" />
+    <Compile Include="PartialClass\Honor.cs" />
+    <Compile Include="PartialClass\SectionPlace.cs" />
+    <Compile Include="PartialClass\Student.cs" />
+    <Compile Include="PartialClass\TeachingPlan.cs" />
+    <Compile Include="PartialClass\UserInfo.cs" />
+    <Compile Include="PartialClass\View_CountALL.cs" />
+    <Compile Include="PartialClass\View_CountBG.cs" />
+    <Compile Include="PartialClass\Warehouse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="DALTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DALTemplate.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DBUtility\DBUtility.csproj">
+      <Project>{d9883623-0c26-4606-9e7d-7da9402f3c62}</Project>
+      <Name>DBUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EmsCommon\EmsCommon.csproj">
+      <Project>{3a6172af-46ab-45bf-9717-a1887f2a0c66}</Project>
+      <Name>EmsCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EmsModel\EmsModel.csproj">
+      <Project>{f56abe08-c301-44a5-897c-2a27a4a8260b}</Project>
+      <Name>EmsModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

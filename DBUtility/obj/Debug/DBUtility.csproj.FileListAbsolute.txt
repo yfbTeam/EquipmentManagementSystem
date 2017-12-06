@@ -1,0 +1,8 @@
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\DBUtility\obj\Debug\DBUtility.csprojResolveAssemblyReference.cache
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\DBUtility\bin\Debug\DBUtility.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\DBUtility\bin\Debug\DBUtility.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\DBUtility\bin\Debug\ChnCharInfo.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\DBUtility\bin\Debug\log4net.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\DBUtility\bin\Debug\Newtonsoft.Json.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\DBUtility\obj\Debug\DBUtility.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\DBUtility\obj\Debug\DBUtility.pdb

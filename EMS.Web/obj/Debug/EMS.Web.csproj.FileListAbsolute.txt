@@ -1,0 +1,13 @@
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\obj\Debug\EMS.Web.csprojResolveAssemblyReference.cache
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\EMS.Web.dll.config
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\EMS.Web.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\EMS.Web.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\DBUtility.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\EmsModel.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\Newtonsoft.Json.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\log4net.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\ChnCharInfo.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\DBUtility.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\bin\EmsModel.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\obj\Debug\EMS.Web.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EMS.Web\obj\Debug\EMS.Web.pdb

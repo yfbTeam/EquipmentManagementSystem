@@ -1,0 +1,14 @@
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\obj\Debug\EmsDAL.csprojResolveAssemblyReference.cache
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\EmsDAL.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\EmsDAL.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\DBUtility.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\EmsCommon.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\EmsModel.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\Newtonsoft.Json.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\log4net.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\ChnCharInfo.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\DBUtility.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\EmsCommon.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\bin\Debug\EmsModel.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\obj\Debug\EmsDAL.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsDAL\obj\Debug\EmsDAL.pdb

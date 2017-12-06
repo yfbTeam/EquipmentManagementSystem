@@ -1,0 +1,4 @@
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsCommon\bin\Debug\EmsCommon.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsCommon\bin\Debug\EmsCommon.pdb
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsCommon\obj\Debug\EmsCommon.dll
+D:\projects\仪器设备管理系统\EquipmentManagementSystem\EmsCommon\obj\Debug\EmsCommon.pdb
